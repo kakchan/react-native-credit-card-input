@@ -1,7 +1,7 @@
 {
-  "name": "react-native-credit-card-input",
+  "name": "react-native-credit-card-input-vertical",
   "version": "0.4.1",
-  "description": "React native credit card input component",
+  "description": "React native credit card input component - vertical input form",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
