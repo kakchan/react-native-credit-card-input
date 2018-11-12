@@ -1,11 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactNative, {
-  NativeModules,
+import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
   Dimensions,
   TextInput,
   ViewPropTypes,
@@ -20,7 +18,6 @@ const s = StyleSheet.create({
   },
   form: {
     marginTop: 20,
-    backgroundColor: 'red'
   },
   inputContainer: {
     marginLeft: 20,
@@ -35,10 +32,11 @@ const s = StyleSheet.create({
   },
 });
 
-const CVC_INPUT_WIDTH = 70;
-const EXPIRY_INPUT_WIDTH = CVC_INPUT_WIDTH;
+const MARGIN_SIZE = 10;
 const CARD_NUMBER_INPUT_WIDTH_OFFSET = 40;
-const CARD_NUMBER_INPUT_WIDTH = Dimensions.get("window").width - EXPIRY_INPUT_WIDTH - CARD_NUMBER_INPUT_WIDTH_OFFSET;
+const CARD_NUMBER_INPUT_WIDTH = Dimensions.get("window").width - CARD_NUMBER_INPUT_WIDTH_OFFSET;
+const CVC_INPUT_WIDTH = (CARD_NUMBER_INPUT_WIDTH / 2) - (MARGIN_SIZE / 2);
+const EXPIRY_INPUT_WIDTH = CVC_INPUT_WIDTH;
 const NAME_INPUT_WIDTH = CARD_NUMBER_INPUT_WIDTH;
 const PREVIOUS_FIELD_OFFSET = 40;
 const POSTAL_CODE_INPUT_WIDTH = 120;
@@ -89,6 +87,14 @@ export default class CreditCardInput extends Component {
       borderBottomWidth: 1,
       borderBottomColor: "black",
     },
+    validationMessages: {
+      number: null,
+      expiry: null,
+      cvc: null,
+    },
+    validationMessageStyle: {
+      color: 'red',
+    },
     validColor: "",
     invalidColor: "red",
     placeholderColor: "gray",
@@ -99,7 +105,7 @@ export default class CreditCardInput extends Component {
   _inputProps = field => {
     const {
       inputStyle, labelStyle, validColor, invalidColor, placeholderColor,
-      placeholders, labels, values, status,
+      placeholders, labels, values, status, validationMessages, validationMessageStyle,
       onFocus, onChange, onBecomeEmpty, onBecomeValid,
       additionalInputsProps,
     } = this.props;
@@ -112,6 +118,8 @@ export default class CreditCardInput extends Component {
 
       label: labels[field],
       placeholder: placeholders[field],
+      validationMessage: validationMessages[field],
+      validationMessageStyle: validationMessageStyle,
       value: values[field],
       status: status[field],
 
@@ -131,24 +139,28 @@ export default class CreditCardInput extends Component {
 
     return (
       <View style={s.container}>
-        <CreditCard focused={focused}
-                    brand={type}
-                    scale={cardScale}
-                    fontFamily={cardFontFamily}
-                    imageFront={cardImageFront}
-                    imageBack={cardImageBack}
-                    customIcons={cardBrandIcons}
-                    name={requiresName ? name : " "}
-                    number={number}
-                    expiry={expiry}
-                    cvc={cvc} />
-        <CCInput {...this._inputProps("number")}
-                 keyboardType="numeric"
-                 containerStyle={[s.inputContainer, inputContainerStyle, { width: CARD_NUMBER_INPUT_WIDTH }]} />
+        <CreditCard
+          focused={focused}
+          brand={type}
+          scale={cardScale}
+          fontFamily={cardFontFamily}
+          imageFront={cardImageFront}
+          imageBack={cardImageBack}
+          customIcons={cardBrandIcons}
+          name={requiresName ? name : " "}
+          number={number}
+          expiry={expiry}
+          cvc={cvc}
+        />
+        <CCInput
+          {...this._inputProps("number")}
+          keyboardType="numeric"
+          containerStyle={[s.inputContainer, inputContainerStyle, { width: CARD_NUMBER_INPUT_WIDTH }]}
+        />
         <View style={{ flexDirection: 'row' }}>
           <CCInput {...this._inputProps("expiry")}
                    keyboardType="numeric"
-                   containerStyle={[s.inputContainer, inputContainerStyle, { marginRight: 10, width: EXPIRY_INPUT_WIDTH }]} />
+                   containerStyle={[s.inputContainer, inputContainerStyle, { marginRight: MARGIN_SIZE, width: EXPIRY_INPUT_WIDTH }]} />
           { requiresCVC &&
           <CCInput {...this._inputProps("cvc")}
                    keyboardType="numeric"

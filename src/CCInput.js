@@ -21,6 +21,8 @@ export default class CCInput extends Component {
     label: PropTypes.string,
     value: PropTypes.string,
     placeholder: PropTypes.string,
+    validationMessage: PropTypes.string,
+    validationMessageStyle: PropTypes.object,
     keyboardType: PropTypes.string,
 
     status: PropTypes.oneOf(["valid", "invalid", "incomplete"]),
@@ -70,12 +72,14 @@ export default class CCInput extends Component {
     const { label, value, placeholder, status, keyboardType,
             containerStyle, inputStyle, labelStyle,
             validColor, invalidColor, placeholderColor,
-            additionalInputProps } = this.props;
+            additionalInputProps, validationMessage, validationMessageStyle,
+    } = this.props;
     return (
       <TouchableOpacity onPress={this.focus}
         activeOpacity={0.99}>
         <View style={[containerStyle]}>
           { !!label && <Text style={[labelStyle]}>{label}</Text>}
+          { validationMessage && <Text style={[validationMessageStyle]}>{validationMessage}</Text> }
           <TextInput ref="input"
             {...additionalInputProps}
             keyboardType={keyboardType}
